@@ -1,2 +1,0 @@
-pip install -r requeriments\requeriments.txt
-pip freeze > requeriments\requeriments.txt
