@@ -1,0 +1,7 @@
+{% if request.session.group.name == "representante" %}
+    <h5 class="m-0"> Representante Técnico <small>CSCSF-UTEQ</small></h5>
+{% elif request.session.group.name == "bodega" %}
+    <h5 class="m-0"> Bodega {{ request.user.bodega_set.all.first.nombre }} <small>CSCSF-UTEQ</small></h5>
+{% elif request.session.group.name == "laboratorio" %}
+    <h5 class="m-0"> Laboratorio {{ request.user.laboratorio_set.all.first.nombre }} <small>CSCSF-UTEQ</small></h5>
+{% endif %}

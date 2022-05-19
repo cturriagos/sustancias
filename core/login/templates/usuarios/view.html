@@ -1,0 +1,143 @@
+{% extends 'view.html' %}
+
+{% load custom_filters %}
+
+{% block view_detail %}
+    <div class="row">
+        <div class="col-sm-10">
+            <div class="row">
+                <div class="col-sm-6">
+                    <!-- text input -->
+                    <div class="form-group">
+                        <label>Nombres:</label>
+                        <input type="text" disabled class="form-control"
+                               value="{{ view.object|view_prop:"first_name" }}">
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label>Apellidos:</label>
+                        <input type="text" class="form-control" disabled=""
+                               value="{{ view.object|view_prop:"last_name" }}">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <!-- text input -->
+                    <div class="form-group">
+                        <label>Cédula:</label>
+                        <input type="text" disabled class="form-control"
+                               value="{{ view.object|view_prop:"cedula" }}">
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label>Telefono:</label>
+                        <input type="text" class="form-control" disabled=""
+                               value="{{ view.object|view_prop:"telefono" }}">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <!-- text input -->
+                    <div class="form-group">
+                        <label>Fecha de registro:</label>
+                        <input type="text" class="form-control" disabled=""
+                               value="{{ view.object|view_prop:"date_joined" }}">
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <!-- text input -->
+                    <div class="form-group">
+                        <label>Correo electronico:</label>
+                        <input type="text" class="form-control " disabled=""
+                               value="{{ view.object|view_prop:"email" }}">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="form-group">
+                <label>Imagen:</label>
+                <img style="width: 100%; height: 100%" src="{{ view.object|get_url_image:"imagen" }}"
+                     alt=""/>
+            </div>
+        </div>
+    </div>
+    {% if is_user %}
+        <div class="row">
+            <div class="col-sm-6">
+                <!-- text input -->
+                <div class="form-group">
+                    <label>Nombre de usuario:</label>
+                    <input type="text" disabled class="form-control"
+                           value="{{ view.object|view_prop:"username" }}">
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Estado:</label>
+                    <input type="text" class="form-control" disabled=""
+                           value="{{ view.object|get_bool_prop:"is_active" }}">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <!-- text input -->
+                <div class="form-group">
+                    <label>Ultimo acceso:</label>
+                    <input type="text" disabled class="form-control"
+                           value="{{ view.object|view_prop:"last_login" }}">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="form-group">
+                    <label>Permisos de usuario registrados:</label>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Permiso</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for cpd in view.object.groups.all %}
+                                <tr>
+                                    <th scope="row">{{ cpd.id }}</th>
+                                    <td>{{ cpd.descripcion }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% endif %}
+{% endblock %}
+
+{% block butons_list %}
+    <a href="{% url 'session:actualizacionusuarios' view.object.id %}" class="btn btn-primary btn-flat">
+        <i class="fas fa-edit"></i>
+        Editar informacion
+    </a>
+
+    {% if is_del %}
+        <a href="{% url 'session:eliminarususuarios' view.object.id %}"
+           class="btn btn-danger btn-flat">
+            <i class="fas fa-trash"></i>
+            Eliminar
+        </a>
+    {% endif %}
+    <a href="{{ url_list }}" class="btn btn-default float-right btn-flat">
+        <i class="fas fa-eject"></i>
+        Cancelar
+    </a>
+{% endblock %}

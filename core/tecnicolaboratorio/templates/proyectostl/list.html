@@ -1,0 +1,90 @@
+{% extends 'list.html' %}
+
+{% load static %}
+
+{% block contenttable %}
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Nombre</th>
+        <th scope="col">Responsable</th>
+        {% if request.session.group.name != 'laboratorio' %}
+            <th scope="col">Laboratorio</th>
+        {% endif %}
+        <th scope="col">Fecha Inicio</th>
+        <th scope="col">Fecha Fin</th>
+        <th scope="col">Información adiccional</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+{% endblock %}
+
+{% block buttons_list %}
+    {% if request.session.group.name in users_creators %}
+        <a href="{{ create_url }}" class="btn btn-primary btn-flat">
+            <i class="fas fa-plus"></i>
+            Nuevo registro
+        </a>
+    {% endif %}
+    <button rel="btnSync" type="button" class="btn btn-primary btn-success">
+        <i class="fas fa-sync"></i>
+        Actualizar
+    </button>
+{% endblock %}
+
+{% block script %}
+    <script>
+        $(function () {
+            CSCSF.init({'id': 0, 'action': 'searchdata', 'type': 'todo'});
+
+            CSCSF.datatable = $('#tblistado').DataTable({
+                'responsive': true,
+                'autoWidth': CSCSF.autoWidthDatatable,
+                'deferRender': true,
+                'processing': true,
+                'ajax': {
+                    'url': window.location.pathname,
+                    'type': 'GET',
+                    'data': function (d) {
+                        d.action = CSCSF.data.action;
+                        d.id = CSCSF.data.id;
+                        d.type = CSCSF.data.type;
+                        d.result = "jsondata";
+                    },
+                    'dataSrc': function (json) {
+                        CSCSF.initial = true;
+                        return json;
+                    }
+                },
+                'columns': [
+                    {'data': 'id'},
+                    {'data': 'nombre'},
+                    {'data': 'resp'},
+                    {% if request.session.group.name != 'laboratorio' %}
+                        {'data': 'lab'},
+                    {% endif %}
+                    {'data': 'fecha_in'},
+                    {'data': 'fecha_fn'},
+                    {'data': 'id'},
+                ],
+                'columnDefs': [
+                    {
+                        'targets': [
+                            {% if request.session.group.name != 'laboratorio' %}
+                                6
+                            {% else %}
+                                5
+                            {% endif %}
+                        ],
+                        'render': function (data, type, row) {
+                            return `<a target="_blank" href="/proyectos/view/${data}/" class="nav-link" style="cursor: pointer; text-align: center">Ver</a>`;
+                        }
+                    }
+                ]
+            });
+
+            CSCSF.init_events_datatable();
+        });
+    </script>
+{% endblock %}

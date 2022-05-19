@@ -1,0 +1,224 @@
+{% extends 'list.html' %}
+
+{% load widget_tweaks %}
+{% load static %}
+
+{% block head_list %}
+    <link href="{% static 'lib/jquery-ui-1.12.1/jquery-ui.min.css' %}" rel="stylesheet"/>
+    <script src="{% static 'lib/jquery-ui-1.12.1/jquery-ui.min.js' %}"></script>
+
+    <link href="{% static 'lib/select2-4.0.13/css/select2.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'lib/select2-4.0.13/css/select2-bootstrap4.min.css' %}" rel="stylesheet"/>
+    <script src="{% static 'lib/select2-4.0.13/js/select2.min.js' %}"></script>
+    <script src="{% static 'lib/select2-4.0.13/js/i18n/es.js' %}"></script>
+
+    <script src="{% static 'lib/bootstrap-touchspin-4.3.0/jquery.bootstrap-touchspin.js' %}"></script>
+    <link href="{% static 'lib/bootstrap-touchspin-4.3.0/jquery.bootstrap-touchspin.css' %}" rel="stylesheet"/>
+
+    <link href="{% static 'compras/css/create.css' %}" rel="stylesheet"/>
+{% endblock %}
+
+{% block content %}
+    <div class="content">
+        <div class="card card-default">
+            <form id="formCrearSolicitud" method="post" action="." enctype="multipart/form-data">
+                <input type="hidden" name="action" value="{{ action }}"/>
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-{{ icontitle }}"></i>
+                        {{ title }}
+                    </h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="card card-secondary">
+                                <div class="card-header">
+                                    <h3 class="card-title"><i class="fas fa-atom"></i> Datos de la solicitud</h3>
+                                </div>
+                                <!-- /.card-header -->
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <div style="display: flex">
+                                            {% if form.bodega.field.required %}
+                                                <div style="font-size: 0.5rem; margin-right: 3px; margin-top: 4px;">
+                                                    <i class="fa fa-asterisk fa-xs" aria-hidden="true"
+                                                       style="color: red"></i>
+                                                </div>
+                                            {% endif %}
+                                            <label>Bodega:</label>
+                                        </div>
+                                        {{ form.bodega }}
+                                    </div>
+                                    <div class="form-group">
+                                        <div style="display: flex">
+                                            {% if form.proyecto.field.required %}
+                                                <div style="font-size: 0.5rem; margin-right: 3px; margin-top: 4px;">
+                                                    <i class="fa fa-asterisk fa-xs" aria-hidden="true"
+                                                       style="color: red"></i>
+                                                </div>
+                                            {% endif %}
+                                            <label>Proyecto:</label>
+                                        </div>
+                                        {{ form.proyecto }}
+                                    </div>
+                                    <div class="form-group">
+                                        <div style="display: flex">
+                                            {% if form.codigo_solicitud.field.required %}
+                                                <div style="font-size: 0.5rem; margin-right: 3px; margin-top: 4px;">
+                                                    <i class="fa fa-asterisk fa-xs" aria-hidden="true"
+                                                       style="color: red"></i>
+                                                </div>
+                                            {% endif %}
+                                            <label>Codigo de solicitud:</label>
+                                        </div>
+                                        {{ form.codigo_solicitud }}
+                                    </div>
+                                    <div class="form-group">
+                                        <div style="display: flex">
+                                            {% if form.documento_solicitud.field.required %}
+                                                <div style="font-size: 0.5rem; margin-right: 3px; margin-top: 4px;">
+                                                    <i class="fa fa-asterisk fa-xs" aria-hidden="true"
+                                                       style="color: red"></i>
+                                                </div>
+                                            {% endif %}
+                                            <label>Solicitud:</label>
+                                        </div>
+                                        {{ form.documento_solicitud|add_class:'form-control' }}
+                                    </div>
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+                        </div>
+                        <div class="col-lg-8">
+                            <div class="card card-secondary">
+                                <div class="card-header">
+                                    <h3 class="card-title"><i class="fas fa-boxes"></i> Detalle de sustancias
+                                        solicitadas
+                                    </h3>
+                                </div>
+                                <!-- /.card-header -->
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="search_substance">Buscador de sustancias:</label>
+                                        <div class="input-group">
+                                            <input id="search_substance" name="search"
+                                                   placeholder="Ingrese el nombre de la sustancia a buscar"
+                                                   autocomplete="off" type="text" class="form-control">
+                                            <span class="input-group-append">
+                                            <button type="button" rel="cleansearch" class="btn btn-danger btn-flat">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </span>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <button rel="removeall" type="button" class="btn btn-danger btn-xs btn-flat">
+                                        Eliminar todas las sustancias
+                                    </button>
+                                    <hr>
+                                    <table id="tblistado" class="table" style="width: 100%">
+                                        <thead>
+                                        <tr>
+                                            <th scope="col">Accion</th>
+                                            <th scope="col">Sustancia</th>
+                                            <th scope="col">Unidad de medida</th>
+                                            <th scope="col">Cantidad solicitada</th>
+                                            <th scope="col">Bodega</th>
+                                            <th scope="col">Cantidad bodega</th>
+                                        </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.card-body -->
+                <div class="card-footer">
+                    {% csrf_token %}
+                    <button rel="save" type="submit" class="btn btn-primary btn-flat">
+                        <i class="fas fa-save"></i>
+                        {% if action == 'add' %}
+                            Guardar registro
+                        {% elif action == 'edit' %}
+                            Actualizar registro
+                        {% endif %}
+                    </button>
+                    <button rel="savenext" type="submit" class="btn btn-secondary btn-flat">
+                        <i class="fas fa-save"></i>
+                        {% if action == 'add' %}
+                            Guardar
+                        {% elif action == 'edit' %}
+                            Actualizar
+                        {% endif %}
+                        y continuar editando
+                    </button>
+                    {% if action == 'add' %}
+                        <button rel="othersave" type="submit" class="btn btn-dark btn-flat">
+                            <i class="fas fa-random"></i>
+                            Guardar y añadir otro
+                        </button>
+                    {% endif %}
+                    <a href="{{ url_list }}" class="btn btn-default float-right btn-flat">
+                        <i class="fas fa-eject"></i>
+                        Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    {% if action == 'add' %}
+        <script src="{% static 'solicitudtl/js/create.js' %}"></script>
+    {% elif action == 'edit' %}
+        <script src="{% static 'solicitudtl/js/update.js' %}"></script>
+    {% endif %}
+
+    <script type="application/javascript">
+        $(function () {
+            //envio de datos al servidor
+            $('#formCrearSolicitud').on('submit', function (event) {
+                event.preventDefault();
+                let form = this;
+                let action_save = $(event.originalEvent.submitter).attr('rel');
+                solicitud.verify_send_data(function () {
+                    let parameters = new FormData(form);
+                    {% if action == 'add' %}
+                        parameters.append('sustancias', JSON.stringify(solicitud.data.sustancias));
+                    {% elif action == 'edit' %}
+                        parameters.append('detalle_solicitud', JSON.stringify(solicitud.data.detalleSolicitud));
+                    {% endif %}
+
+                    submit_with_ajax(
+                        window.location.pathname, parameters
+                        , 'Confirmación'
+                        , '¿Estas seguro de realizar la siguiente acción?'
+                        , function (data) {
+                            if (action_save === 'save') {
+                                location.href = '{{ url_list }}';
+                                return false;
+                            } else if (action_save === 'savenext') {
+                                if (data.url) {
+                                    location.href = data.url;
+                                    return false;
+                                }
+                            }
+                            location.reload();
+                        }, function () {
+                            $.unblockUI();
+                        }
+                    );
+                }, function (message) {
+                    message_info(message, function () {
+
+                    });
+                });
+            });
+        });
+    </script>
+{% endblock %}

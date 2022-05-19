@@ -1,0 +1,12 @@
+{% load static %}
+
+<script type="application/javascript">
+    {% if messages %}
+        let html_messages = '<p>';
+        {% for message in messages %}
+            html_messages += '{{ message }}<br>';
+        {% endfor %}
+        html_messages += '</p>';
+        message_error(html_messages);
+    {% endif %}
+</script>

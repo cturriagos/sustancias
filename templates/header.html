@@ -1,0 +1,51 @@
+{% load static %}
+<!-- Navbar -->
+<nav class="main-header navbar navbar-fixed-top fixed-top navbar-expand-md navbar-light navbar-white">
+    <div class="container">
+        <a href="{% url 'dashboard' %}" class="navbar-brand">
+            <img loading="lazy" src="{% static 'img/uteq/logoUTEQoriginal1.png' %}" alt="UTEQ Logo navbar"
+                 class="brand-image" style="opacity: .8">
+            <span class="brand-text font-weight-light">CSCSF</span>
+        </a>
+        <button class="navbar-toggler order-1" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse order-3" id="navbarCollapse">
+            <ul class="navbar-nav">
+                {% block button_hide_sidebar %}
+
+                {% endblock %}
+                <li class="nav-item">
+                    <a href="{% url 'dashboard' %}" class="nav-link">Inicio</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'rp:repositorio' %}" class="nav-link">Repositorio</a>
+                </li>
+                {% block nav_user %}
+
+                {% endblock %}
+                <li class="nav-item dropdown">
+                    <a id="dropdownSubMenu4" href="#" data-toggle="dropdown" aria-haspopup="true"
+                       aria-expanded="false"
+                       class="nav-link dropdown-toggle">Ayuda</a>
+                    <ul aria-labelledby="dropdownSubMenu4" class="dropdown-menu border-0 shadow">
+                        <li><a href="#" class="dropdown-item">Preguntas frecuentes</a></li>
+                        <li><a href="#" class="dropdown-item">Contactenos</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <button class="navbar-toggler order-1" type="button" data-toggle="collapse" data-target="#navbarCollapse1"
+                aria-controls="navbarCollapse1" aria-expanded="false" aria-label="Toggle user controls">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse order-3" id="navbarCollapse1">
+            <!-- Right navbar links -->
+            <ul class="order-1 order-md-3 navbar-nav navbar-no-expand ml-auto">
+                {% include 'userActions.html' %}
+            </ul>
+        </div>
+    </div>
+</nav>

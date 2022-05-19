@@ -1,0 +1,246 @@
+{% extends 'list.html' %}
+
+{% load static %}
+{% load custom_filters %}
+
+{% block head_list %}
+    <link rel="stylesheet"
+          href="{% static 'lib/datatables-1.10.20/plugins/buttons-1.6.1/css/buttons.bootstrap4.min.css' %}"/>
+    <script src="{% static 'lib/datatables-1.10.20/plugins/buttons-1.6.1/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'lib/datatables-1.10.20/plugins/jszip-2.5.0/jszip.min.js' %}"></script>
+    <script src="{% static 'lib/datatables-1.10.20/plugins/pdfmake-0.1.36/pdfmake.min.js' %}"></script>
+    <script src="{% static 'lib/datatables-1.10.20/plugins/pdfmake-0.1.36/vfs_fonts.js' %}"></script>
+    <script src="{% static 'lib/datatables-1.10.20/plugins/buttons-1.6.1/js/buttons.html5.min.js' %}"></script>
+{% endblock %}
+
+{% block filtrostable %}
+    <li class="nav-item">
+        <a class="nav-link collapsed text-truncate" href="#submenu1" data-toggle="collapse" data-target="#submenu1">
+            <i class="far fa-calendar-times"></i>
+            <span class="d-none d-sm-inline">Sustancias</span>
+        </a>
+        <div class="collapse" id="submenu1" aria-expanded="false">
+            <ul class="flex-column pl-2 nav">
+                {% for sustancia in sustancias %}
+                    <li class="nav-item">
+                        <a rel="search" data-action="searchdata" data-year="0"
+                           data-id="{{ sustancia.id }}" data-type="sus" data-collapse="submenu1"
+                           class="nav-link py-0" style="cursor: pointer">
+                            <i class="far fa-circle nav-icon"></i>
+                            <span>{{ sustancia.nombre }}</span>
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </li>
+    {% for year in years_disp %}
+        <li class="nav-item">
+            <a class="nav-link collapsed text-truncate" href="#submenu{{ year.anio }}" data-toggle="collapse"
+               data-target="#submenu{{ year.anio }}">
+                <i class="far fa-calendar-times"></i>
+                <span class="d-none d-sm-inline">{{ year.anio }}</span>
+            </a>
+            <div class="collapse" id="submenu{{ year.anio }}" aria-expanded="false">
+                <ul class="flex-column pl-2 nav">
+                    {% for mes in meses %}
+                        <li class="nav-item">
+                            <a rel="search" data-action="searchdata" data-type="year"
+                               data-year="{{ year.anio }}" data-id="{{ mes.id }}"
+                               class="nav-link py-0" data-collapse="submenu{{ year.anio }}"
+                               style="cursor: pointer">
+                                <i class="far fa-circle nav-icon"></i>
+                                <span>{{ mes.nombre }}</span>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </li>
+    {% endfor %}
+{% endblock %}
+
+{% block contenttable %}
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Sustancia</th>
+        <th scope="col">Cantidad</th>
+        <th scope="col">Tipo movimiento</th>
+        <th scope="col">Fecha movimiento</th>
+        <th scope="col">Mes</th>
+        <th scope="col">Año</th>
+        {% if request.session.group.name == "representante" %}
+            <th scope="col">Tipo Lugar</th>
+            <th scope="col">Lugar</th>
+        {% elif request.session.group.name == "bodega" %}
+            <th scope="col">Bodega</th>
+        {% elif request.session.group.name == "laboratorio" %}
+            <th scope="col">Laboratorio</th>
+        {% endif %}
+    </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+{% endblock %}
+
+{% block buttons_list %}
+    <button rel="btnSync" type="button" class="btn btn-primary btn-success">
+        <i class="fas fa-sync"></i>
+        Actualizar
+    </button>
+{% endblock %}
+
+{% block script %}
+    <script>
+        $(function () {
+            CSCSF.init({'action': 'searchdata', 'type': 'todo', 'year': 0, 'id': 0});
+            CSCSF.datatable = $('#tblistado').DataTable({
+                'responsive': true,
+                'autoWidth': CSCSF.autoWidthDatatable,
+                'deferRender': true,
+                'processing': true,
+                'ajax': {
+                    'url': window.location.pathname,
+                    'type': 'GET',
+                    'data': function (d) {
+                        d.action = CSCSF.data.action;
+                        d.year = CSCSF.data.year;
+                        d.type = CSCSF.data.type;
+                        d.id = CSCSF.data.id;
+                        d.result = "jsondata";
+                    },
+                    'dataSrc': function (json) {
+                        CSCSF.initial = true;
+                        return json;
+                    }
+                },
+                'dom': 'Bfrtip',
+                'buttons': [
+                    {
+                        extend: 'excelHtml5',
+                        text: 'Descargar Excel <i class="fas fa-file-excel"></i>',
+                        titleAttr: 'Excel',
+                        className: 'btn btn-success btn-flat btn-xs',
+                        messageTop: function () {
+                            return get_title_file();
+                        }
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        text: 'Descargar Pdf <i class="fas fa-file-pdf"></i>',
+                        titleAttr: 'PDF',
+                        className: 'btn btn-danger btn-flat btn-xs',
+                        download: 'open',
+                        orientation: 'landscape',
+                        pageSize: 'A4',
+                        header: true,
+                        customize: function (doc) {
+                            doc.styles = {
+                                header: {fontSize: 30, bold: true},
+                                quote: {
+                                    italics: true
+                                },
+                                small: {
+                                    fontSize: 8
+                                },
+                                tableHeader: {
+                                    bold: true,
+                                    fontSize: 12,
+                                    color: 'white',
+                                    fillColor: '#2d4154',
+                                    alignment: 'center'
+                                }
+                            };
+                            doc.styles.title = {fontSize: 40};
+                            doc.content[0].text = "";
+                            doc.content[1].layout = {};
+
+                            let colCount = [];
+                            $("#tblistado").find('tbody tr:first-child td').each(function () {
+                                if ($(this).attr('colspan')) {
+                                    for (let i = 1; i <= $(this).attr('colspan'); i++) {
+                                        colCount.push('*');
+                                    }
+                                } else {
+                                    colCount.push('*');
+                                }
+                            });
+                            doc.content[1].table.widths = colCount;
+
+                            doc['footer'] = (function (page, pages) {
+                                return {
+                                    columns: [
+                                        {
+                                            alignment: 'left',
+                                            text: ['Fecha de creación: ', {text: new Date().toISOString().slice(0, 10)}]
+                                        },
+                                        {
+                                            alignment: 'right',
+                                            text: ['página ', {text: page.toString()}, ' de ', {text: pages.toString()}]
+                                        }
+                                    ],
+                                    margin: 20
+                                }
+                            });
+
+                            doc['header'] = (function (page, pages) {
+                                return {
+                                    text: get_title_file(), alignment: 'center',
+                                    margin: 20
+                                }
+                            });
+
+                        }
+                    }
+                ],
+                'columns': [
+                    {'data': 'id'},
+                    {'data': 'sustancia'},
+                    {'data': 'can_mov'},
+                    {'data': 'mov_type'},
+                    {'data': 'date_creation'},
+                    {'data': 'mes'},
+                    {'data': 'anio'},
+                    {% if request.session.group.name == "representante" %}
+                        {'data': 'lugar'},
+                    {% endif %}
+                    {'data': 'nombre_lugar'}
+                ],
+                'columnDefs': [
+                    {
+                        'targets': [3],
+                        'render': function (data, type, row) {
+                            if (data === 'delete') return "Consumo"
+                            else return "Ingreso"
+                        }
+                    },
+                ]
+            });
+
+            function get_title_file() {
+                let title = "Movimientos de inventario ";
+                if (CSCSF.data.type === "todo") {
+                    title += "actuales";
+                } else if (CSCSF.data.type === "year") {
+                    let mes_select = $('ul[rel=lista_filtros]')
+                        .find(`a[data-type=${CSCSF.data.type}]`)
+                        .find(`a[data-year=${CSCSF.data.year}]`)
+                        .find(`a[data-id=${CSCSF.data.id}]`)
+                        .find('span').text();
+                    title += `del mes de ${mes_select.toUpperCase()} del año ${CSCSF.data.year}`;
+                } else if (CSCSF.data.type === "sus") {
+                    let sustancia_select = $('ul[rel=lista_filtros]')
+                        .find(`a[data-type=${CSCSF.data.type}]`)
+                        .find(`a[data-id=${CSCSF.data.id}]`)
+                        .find('span').text();
+                    title += `de la sustancia ${sustancia_select.toUpperCase()}`;
+                }
+                return title
+            }
+
+            CSCSF.init_events_datatable();
+        });
+    </script>
+{% endblock %}

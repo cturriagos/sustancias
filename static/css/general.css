@@ -1,0 +1,119 @@
+.select2 {
+    width: 100% !important;
+}
+
+.form-group-sm > .select2 {
+    font-size: 11px;
+}
+
+table.dataTable tbody tr.selected {
+    background-color: #B0BED9;
+}
+
+.help {
+    font-size: 11px;
+    color: #999;
+}
+
+.help ul li {
+    display: block;
+}
+
+.help ul {
+    padding-inline-start: unset;
+}
+
+td.details-control {
+    background: url('../lib/datatables-1.10.20/images/details_open.png') no-repeat center center;
+    cursor: pointer;
+}
+
+tr.shown td.details-control {
+    background: url('../lib/datatables-1.10.20/images/details_close.png') no-repeat center center;
+}
+
+.fondoPantalla {
+    background: url('../img/fondoLogin.jpg') no-repeat center center fixed;
+    background-size: cover;
+    z-index: -1;
+}
+
+.login-box {
+    background-color: #f5f5f5;
+}
+
+.login-title {
+    font-size: 22px;
+    font-weight: bold;
+    font-family: 'Courier New', serif;
+    justify-content: center;
+}
+
+.download-title {
+    padding: 0;
+    text-align: center;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.download-link:hover {
+    box-shadow: 1px 1px 2px 3px #e6e6e6;
+}
+
+.select2-container--bootstrap4 .select2-selection--multiple {
+    min-height: calc(1.5em + 1rem + 2px) !important;
+}
+
+.select2-container--bootstrap4 .select2-selection--multiple .select2-selection__choice__remove {
+    border-width: 0;
+    color: #0c0c0c;
+    background-color: #fff;
+}
+
+.layout-fixed .wrapper .main-header .brand-image {
+    margin-top: -.5rem;
+    margin-right: .2rem;
+    height: 33px;
+}
+
+ul.lista-filtros .nav-link[data-toggle].collapsed:after {
+    content: " ▾";
+}
+
+ul.lista-filtros .nav-link[data-toggle]:not(.collapsed):after {
+    content: " ▴";
+}
+
+ul.lista-filtros li.active {
+    background-color: black;
+    border-radius: .25rem;
+}
+
+ul.lista-filtros li.active a {
+    color: white !important;
+}
+
+ul.lista-filtros li a {
+    color: black !important;
+}
+
+ul.lista-filtros li a span {
+    -webkit-text-size-adjust: none;
+    text-size-adjust: auto;
+    font-size: .9vw;
+}
+
+.card-deck .card {
+    box-shadow: none;
+    width: 18rem;
+    min-width: 10em;
+}
+
+.card-deck .card:hover {
+    box-shadow: 0 0 1px rgb(0 0 0 / 13%), 0 1px 3px rgb(0 0 0 / 20%);
+}
+
+.card-deck .card:hover a {
+    color: #1a88ff !important;
+}
+

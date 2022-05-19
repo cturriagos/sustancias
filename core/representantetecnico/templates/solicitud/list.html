@@ -1,0 +1,148 @@
+{% extends 'list.html' %}
+
+{% load static %}
+
+{% block filtrostable %}
+    {% if request.session.group.name != 'laboratorio' %}
+        <li class="nav-item">
+            <a class="nav-link collapsed text-truncate" href="#submenu1" data-toggle="collapse" data-target="#submenu1">
+                <i class="nav-icon fas fa-building"></i>
+                <span class="d-none d-sm-inline">Laboratorio</span>
+            </a>
+            <div class="collapse" id="submenu1" aria-expanded="false">
+                <ul class="flex-column pl-2 nav">
+                    {% for laboratorio in laboratorios %}
+                        <li class="nav-item">
+                            <a rel="search" data-id="{{ laboratorio.id }}" data-action="searchdata" data-type="lab"
+                               class="nav-link py-0" data-collapse="submenu1"
+                               style="cursor: pointer">
+                                <i class="far fa-circle nav-icon"></i>
+                                <span>{{ laboratorio.nombre }}</span>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </li>
+    {% endif %}
+    <li class="nav-item">
+        <a class="nav-link collapsed text-truncate" href="#submenu2" data-toggle="collapse" data-target="#submenu2">
+            <i class="fas fa-unlock-alt"></i>
+            <span class="d-none d-sm-inline">Estados</span>
+        </a>
+        <div class="collapse" id="submenu2" aria-expanded="false">
+            <ul class="flex-column pl-2 nav">
+                {% for estado in estados %}
+                    <li class="nav-item">
+                        <a rel="search" data-id="{{ estado.id }}" data-action="searchdata" data-type="est"
+                           class="nav-link py-0" data-collapse="submenu2"
+                           style="cursor: pointer">
+                            <i class="far fa-circle nav-icon"></i>
+                            <span>{{ estado.estado }}</span>
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </li>
+{% endblock %}
+
+{% block contenttable %}
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        {% if request.session.group.name == 'representante' or request.session.group.name == 'bodega' %}
+            <th scope="col">Laboratorio</th>
+        {% endif %}
+        <th scope="col">Proyecto</th>
+        <th scope="col">Codigo solicitud</th>
+        <th scope="col">Estado</th>
+        <th scope="col">Fecha de autorización</th>
+        <th scope="col">Información adiccional</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+{% endblock %}
+
+{% block buttons_list %}
+    {% if request.session.group.name == 'laboratorio' %}
+        <a href="{{ create_url }}" class="btn btn-primary btn-flat">
+            <i class="fas fa-plus"></i>
+            Nuevo registro
+        </a>
+    {% endif %}
+    <button rel="btnSync" type="button" class="btn btn-primary btn-success">
+        <i class="fas fa-sync"></i>
+        Actualizar
+    </button>
+{% endblock %}
+
+{% block script %}
+    <script>
+        $(function () {
+            CSCSF.init({'id': 0, 'action': 'searchdata', 'type': 'todo'});
+            CSCSF.datatable = $('#tblistado').DataTable({
+                'responsive': true,
+                'autoWidth': CSCSF.autoWidthDatatable,
+                'deferRender': true,
+                'processing': true,
+                'ajax': {
+                    'url': window.location.pathname,
+                    'type': 'GET',
+                    'data': function (d) {
+                        d.action = CSCSF.data.action;
+                        d.id = CSCSF.data.id;
+                        d.type = CSCSF.data.type;
+                        d.result = "jsondata";
+                    },
+                    'dataSrc': function (json) {
+                        CSCSF.initial = true;
+                        return json;
+                    }
+                },
+                'columns': [
+                    {'data': 'id'},
+                    {% if request.session.group.name in 'representante' or request.session.group.name == 'bodega' %}
+                        {'data': 'lab'},
+                    {% endif %}
+                    {'data': 'proy'},
+                    {'data': 'codigo'},
+                    {'data': 'est'},
+                    {'data': 'fe_aut'},
+                    {'data': 'id'},
+                ],
+                'columnDefs': [
+                    {
+                        'targets': [
+                            {% if request.session.group.name in 'representante' or request.session.group.name == 'bodega' %}
+                                4
+                            {% else %}
+                                3
+                            {% endif %}
+                        ],
+                        'render': function (data, type, row) {
+                            if (data === 'revision') {
+                                return `<label class="btn-danger">${data}</label>`
+                            }
+                            return data;
+                        }
+                    },
+                    {
+                        'targets': [
+                            {% if request.session.group.name in 'representante' or request.session.group.name == 'bodega' %}
+                                6
+                            {% else %}
+                                5
+                            {% endif %}
+                        ],
+                        'render': function (data, type, row) {
+                            return `<a target="_blank" href="/solicitudes/view/${data}" class="nav-link" style="cursor: pointer; text-align: center">Ver</a>`;
+                        }
+                    }
+                ]
+            });
+            CSCSF.init_events_datatable();
+        });
+    </script>
+{% endblock %}

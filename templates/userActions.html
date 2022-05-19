@@ -1,0 +1,60 @@
+{% load custom_filters %}
+
+
+<li class="nav-item dropdown">
+    <a class="nav-link" data-toggle="dropdown" href="#">
+        <i class="far fa-bell"></i>
+        {% if cant_notifications > 0 %}
+            <span class="badge badge-warning navbar-badge">{{ cant_notifications }}</span>
+        {% endif %}
+    </a>
+    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+        <span class="dropdown-item dropdown-header">{{ cant_notifications }} Notificaciones</span>
+        {% for notification in notifications %}
+            {% if notification.cant > 0 %}
+                <div class="dropdown-divider"></div>
+                <a href="{{ notification.url }}" class="dropdown-item text-sm">
+                    <i class="{{ notification.icon }} mr-2"></i> {{ notification.cant }} {{ notification.text }}
+                    <span class="float-right text-muted text-sm">{{ notification.time }}</span>
+                </a>
+            {% endif %}
+        {% endfor %}
+        <div class="dropdown-divider"></div>
+        <span class="dropdown-footer" style="font-size: 12px;">
+                Ver todas las notificaciones
+            </span>
+    </div>
+</li>
+{% include 'select_rol.html' %}
+<li class="nav-item dropdown">
+    <a class="nav-link" data-toggle="dropdown" href="#">
+        <img loading="lazy" class="brand-image img-rounded elevation-3"
+             src="{{ request.user|get_url_image:"imagen" }}" alt="User image navbar"/>
+        {{ request.user.username }}
+        <i class="fa fa-caret-down" aria-hidden="true"></i>
+    </a>
+    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+            <span class="dropdown-header">
+                {{ request.user|view_prop:"first_name" }}
+                {{ request.user|view_prop:"last_name" }}
+            </span>
+        <div class="dropdown-divider"></div>
+        <a href="{% url 'session:perfilusuario' %}" class="dropdown-item" style="cursor: pointer">
+            <i class="fas fa-user"></i> Editar perfil
+        </a>
+        <div class="dropdown-divider"></div>
+        <a href="{% url 'session:cambiar_clave' %}" class="dropdown-item" style="cursor: pointer">
+            <i class="fas fa-lock"></i> Cambiar contraseña
+        </a>
+        <span class="dropdown-footer" style="font-size: 12px;">
+                {% if request.user.last_login %}
+                    Sú último acceso fue {{ request.user.last_login }}
+                {% endif %}
+            </span>
+    </div>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'session:logout' %}">
+        <i class="fas fa-power-off"></i>
+    </a>
+</li>

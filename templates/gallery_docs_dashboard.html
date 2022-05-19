@@ -1,0 +1,31 @@
+{% load static %}
+<!-- Top content -->
+<div class="top-content">
+    <div class="container-fluid">
+        <div id="carousel-example" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner row w-100 mx-auto" role="listbox">
+                <div class="carousel-item col-12 col-sm-6 col-md-4 col-lg-3 active">
+                    {% for carous in carousel %}
+                        <a class="download-link" href="{{ carous.documento.url }}" target="_blank"
+                           style="float: left;">
+                            <div class="card" style="width: 6rem;">
+                                <i class="card-img-top fa fa-file-pdf fa-8x" aria-hidden="true" style="color: black;"></i>
+                                <div class="card-footer download-title">
+                                    <span style="color: black !important;">{{ carous.nombre }}</span>
+                                </div>
+                            </div>
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+            <a class="carousel-control-prev" href="#carousel-example" role="button" data-slide="prev" style="width: auto">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#carousel-example" role="button" data-slide="next" style="width: auto">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+    </div>
+</div>

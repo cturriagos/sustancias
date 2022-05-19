@@ -1,0 +1,278 @@
+{% extends 'view.html' %}
+
+{% load static %}
+{% load custom_filters %}
+
+{% block head %}
+    {% if request.session.group.name == 'bodega' %}
+        {% if view.object.estado_solicitud.estado == 'aprobado' %}
+            <link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/css/dataTables.bootstrap4.min.css' %}"/>
+            <link rel="stylesheet"
+                  href="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/css/responsive.bootstrap4.min.css' %}"/>
+            <script src="{% static 'lib/datatables-1.10.20/js/jquery.dataTables.js' %}"></script>
+            <script src="{% static 'lib/datatables-1.10.20/js/dataTables.bootstrap4.min.js' %}"></script>
+            <script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/dataTables.responsive.min.js' %}"></script>
+            <script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/responsive.bootstrap4.min.js' %}"></script>
+
+            <script src="{% static 'lib/bootstrap-touchspin-4.3.0/jquery.bootstrap-touchspin.js' %}"></script>
+            <link href="{% static 'lib/bootstrap-touchspin-4.3.0/jquery.bootstrap-touchspin.css' %}" rel="stylesheet"/>
+        {% endif %}
+    {% endif %}
+{% endblock %}
+
+{% block view_detail %}
+    <div class="row">
+        <div class="col-sm-6">
+            <!-- text input -->
+            <div class="form-group">
+                <label>Solicitante:</label>
+                <input type="text" disabled class="form-control"
+                       value="{{ view.object.user_creation }}">
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label>Estado solicitud:</label>
+                <input type="text" class="form-control" disabled=""
+                       value="{{ view.object.estado_solicitud.estado }}">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label>Laboratorio solicitante:</label>
+                <input type="text" class="form-control" disabled=""
+                       value="{{ view.object.laboratorio.nombre }}">
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <!-- text input -->
+            <div class="form-group">
+                <label>Bodega a solicitar:</label>
+                <input type="text" disabled class="form-control"
+                       value="{{ view.object.bodega.nombre }}">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <!-- text input -->
+            <div class="form-group">
+                <label>Nombre de actividad / proyecto:</label>
+                <input type="text" disabled class="form-control"
+                       value="{{ view.object.proyecto|view_prop:'nombre' }}">
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label>Codigo solicitud:</label>
+                <input type="text" disabled class="form-control"
+                       value="{{ view.object.codigo_solicitud }}">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <!-- text input -->
+            <div class="form-group">
+                <label>Fecha de creación:</label>
+                <input type="text" disabled class="form-control"
+                       value="{{ view.object.date_creation }}">
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label>Fecha de autorización:</label>
+                <input type="text" class="form-control" disabled=""
+                       value="{{ view.object|view_prop:"fecha_autorizacion" }}">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="form-group">
+                <label>Documento solicitud:</label>
+                <a class="btn btn-block btn-outline-secondary" target="_blank"
+                   href="{{ view.object.controller.get_doc_solicitud }}">Ver documento</a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <!-- textarea -->
+            <div class="form-group">
+                {% if request.session.group.name == 'representante' and view.object.estado_solicitud.estado == 'registrado' %}
+                    <div style="display: flex">
+                        <div style="font-size: 0.5rem; margin-right: 3px; margin-top: 4px;">
+                            <i class="fa fa-asterisk fa-xs" aria-hidden="true"
+                               style="color: red"></i>
+                        </div>
+                        <label>Observación representante técnico:</label>
+                    </div>
+                    <textarea name="observacionrp" class="form-control" rows="3"
+                              placeholder="Ingrese su observación"
+                              required>{{ view.object|view_prop:"observacion_representante" }}</textarea>
+                {% else %}
+                    <label>Observación representante técnico:</label>
+                    <textarea name="observacionrp" class="form-control" rows="3"
+                              disabled>{{ view.object|view_prop:"observacion_representante" }}</textarea>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                {% if request.session.group.name == 'bodega' and view.object.estado_solicitud.estado == 'aprobado' %}
+                    <div style="display: flex">
+                        <div style="font-size: 0.5rem; margin-right: 3px; margin-top: 4px;">
+                            <i class="fa fa-asterisk fa-xs" aria-hidden="true"
+                               style="color: red"></i>
+                        </div>
+                        <label>Observación bodega:</label>
+                    </div>
+                    <textarea name="observacionbdg" class="form-control" rows="3"
+                              placeholder="Ingrese su observación"
+                              required>{{ view.object|view_prop:"observacion_bodega" }}</textarea>
+                {% else %}
+                    <label>Observación bodega:</label>
+                    <textarea class="form-control" rows="3" name="observacionbdg"
+                              disabled="">{{ view.object|view_prop:"observacion_bodega" }}</textarea>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="form-group">
+                <label>Detalle de solicitud:</label>
+                <div class="table-responsive">
+                    <table class="table" id="tbdetallesolicitud" style="width: 100%">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Sustancia</th>
+                            <th scope="col">Cantidad solicitada</th>
+                            <th scope="col">
+                                {% if request.session.group.name == 'bodega' %}
+                                    {% if view.object.estado_solicitud.estado == 'aprobado' %}
+                                        Cantidad a entregar
+                                    {% else %}
+                                        Cantidad entregada
+                                    {% endif %}
+                                {% else %}
+                                    Cantidad recibida
+                                {% endif %}
+                            </th>
+                            {% if request.session.group.name == 'bodega' and view.object.estado_solicitud.estado == 'aprobado' %}
+                                <th scope="col">Cantidad en bodega</th>
+                            {% endif %}
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% if request.session.group.name == 'representante' or request.session.group.name == 'laboratorio' or request.session.group.name == 'bodega' and view.object.estado_solicitud.estado != 'aprobado' %}
+                            {% for sd in view.object.solicituddetalle_set.all %}
+                                <tr>
+                                    <th scope="row">{{ sd.id }}</th>
+                                    <td>{{ sd.sustancia.nombre }}</td>
+                                    <td>{{ sd.cantidad_solicitada }}</td>
+                                    <td>{{ sd.cantidad_entregada }}</td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block butons_list %}
+    {% if request.session.group.name == 'representante' %}
+        {% if view.object.estado_solicitud.estado == 'registrado' %}
+            <button rel="aprobarSolicitud" type="submit" class="btn btn-primary btn-flat">
+                <i class="fas fa-save"></i>
+                Aprobar solicitud
+            </button>
+            <button rel="revisionSolicitud" type="submit" class="btn btn-danger btn-flat">
+                <i class="fas fa-exclamation-triangle"></i>
+                Revisión solicitud
+            </button>
+        {% endif %}
+    {% elif request.session.group.name == 'laboratorio' %}
+        {% if view.object.estado_solicitud.estado == 'entregado' %}
+            <button rel="recibirSolicitud" type="submit" class="btn btn-primary btn-flat">
+                <i class="fas fa-save"></i>
+                Recibir solicitud
+            </button>
+        {% endif %}
+        {% if view.object.estado_solicitud.estado in view.object.controller.estados_editables %}
+            <a href="{% url 'tl:actualizacionsolicitud' view.object.id %}" class="btn btn-primary btn-flat">
+                <i class="fas fa-edit"></i>
+                Editar
+            </a>
+            <a href="{% url 'tl:eliminarsolicitud' view.object.id %}" class="btn btn-danger btn-flat">
+                <i class="fas fa-times"></i>
+                Eliminar
+            </a>
+        {% endif %}
+    {% elif request.session.group.name == 'bodega' %}
+        {% if view.object.estado_solicitud.estado == 'aprobado' %}
+            <button rel="entregarSolicitud" type="submit" class="btn btn-primary btn-flat">
+                <i class="fas fa-save"></i>
+                Entregar solicitud
+            </button>
+            <button rel="revisionSolicitud" type="submit" class="btn btn-danger btn-flat">
+                <i class="fas fa-save"></i>
+                Revisión solicitud
+            </button>
+        {% endif %}
+    {% endif %}
+
+    <a href="{{ url_list }}" class="btn btn-default float-right btn-flat">
+        <i class="fas fa-eject"></i>
+        Cancelar
+    </a>
+{% endblock %}
+
+{% block script %}
+    <script>
+        $(function () {
+            $('form').on('submit', function (event) {
+                event.preventDefault();
+                const form = this;
+                const parameters = new FormData();
+                let action_save = $(event.originalEvent.submitter).attr('rel');
+                parameters.append('action', action_save);
+                parameters.append('csrfmiddlewaretoken', getCookie('csrftoken'));
+                {% if request.session.group.name == 'representante' %}
+                    {% if view.object.estado_solicitud.estado == 'registrado' %}
+                        parameters.append('tipoobs', 'rp');
+                        parameters.append('observacion', $(form).find('textarea[name=observacionrp]').val());
+                    {% endif %}
+                {% elif request.session.group.name == 'bodega' %}
+                    {% if view.object.estado_solicitud.estado == 'aprobado' %}
+                        parameters.append('tipoobs', 'bdg');
+                        parameters.append('observacion', $(form).find('textarea[name=observacionbdg]').val());
+                        parameters.append("detalles", JSON.stringify(solicitud_entrega.data.detalles));
+                    {% endif %}
+                {% endif %}
+                submit_with_ajax(
+                    window.location.pathname, parameters
+                    , 'Confirmación'
+                    , '¿Estas seguro de realizar la siguiente acción?'
+                    , function callback(data) {
+                        location.reload();
+                    }, function cancelOrError() {
+                        $.unblockUI();
+                    }
+                );
+            });
+        });
+    </script>
+    {% if request.session.group.name == 'bodega' %}
+        {% if view.object.estado_solicitud.estado == 'aprobado' %}
+            <script src="{% static 'solicitudbdg/js/entregarSolicitud.js' %}"></script>
+        {% endif %}
+    {% endif %}
+{% endblock %}

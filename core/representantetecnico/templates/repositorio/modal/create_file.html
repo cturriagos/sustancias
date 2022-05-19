@@ -1,0 +1,115 @@
+<div id="modalNewFile" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <form id="formNewFile" method="post" action="">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="newfilewidthname"/>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nuevo archivo</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div style="display: flex">
+                            {% if formfile.documento.field.required %}
+                                <div style="font-size: 0.5rem; margin-right: 3px; margin-top: 4px;">
+                                    <i class="fa fa-asterisk fa-xs" aria-hidden="true"
+                                       style="color: red"></i>
+                                </div>
+                            {% endif %}
+                            <label for="{{ formfile.documento.auto_id }}">Archivo:</label>
+                        </div>
+                        {{ formfile.documento }}
+                    </div>
+                    <div class="form-group">
+                        <div class="form-check">
+                            {{ formfile.is_name_file }}
+                            <label class="form-check-label" for="{{ formfile.is_name_file.auto_id }}">Mismo nombre que
+                                el archivo:</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div style="display: flex">
+                            {% if formfile.nombre.field.required %}
+                                <div style="font-size: 0.5rem; margin-right: 3px; margin-top: 4px;">
+                                    <i class="fa fa-asterisk fa-xs" aria-hidden="true"
+                                       style="color: red"></i>
+                                </div>
+                            {% endif %}
+                            <label for="{{ formfile.nombre.auto_id }}">Nombre del archivo:</label>
+                        </div>
+                        {{ formfile.nombre }}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('#{{ formfile.is_name_file.auto_id }}').on('change', function (event) {
+            if ($(this).prop('checked')) {
+                $('#formNewFile').find('#{{ formfile.nombre.auto_id }}').prop('disabled', true);
+                let file = $('#formNewFile').find('#{{ formfile.documento.auto_id }}')[0].files[0];
+                if (file) {
+                    $('#formNewFile').find('#{{ formfile.nombre.auto_id }}').val(file.name)
+                }
+            } else {
+                $('#formNewFile').find('#{{ formfile.nombre.auto_id }}').prop('disabled', false);
+            }
+        });
+        $('#formNewFile').find('#{{ formfile.documento.auto_id }}').change(function (event) {
+            let file = $(this)[0].files[0];
+            if (file) {
+                if ($('#{{ formfile.is_name_file.auto_id }}').prop('checked')) {
+                    $('#formNewFile').find('#{{ formfile.nombre.auto_id }}').val(file.name);
+                }
+            }
+        });
+
+        $('#formNewFile').on('submit', function (event) {
+            event.preventDefault();
+            const form = this;
+            const parameters = new FormData(form);
+            parameters.append('type', repositorio.data.type);
+            if (!parameters.get('nombre')) {
+                parameters.append('nombre', $('#formNewFile').find('input[name=nombre]').val())
+            }
+            $.blockUI();
+            $.ajax({
+                'url': window.location.pathname,
+                'type': 'POST',
+                'data': parameters,
+                'dataType': 'json',
+                'processData': false,
+                'contentType': false
+            }).done(function (data) {
+                if (!data.hasOwnProperty('error')) {
+                    repositorio.datatable.ajax.reload();
+                    $('#modalNewFile').modal('hide');
+                } else {
+                    message_error(data.error);
+                }
+                $.unblockUI();
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                message_error(errorThrown);
+                $.unblockUI();
+            }).always(function (data) {
+                $.unblockUI();
+            });
+        });
+
+        $('#modalNewFile').on('hidden.bs.modal', function (e) {
+            $('#formNewFile').find('#{{ formfile.documento.auto_id }}').val("");
+            $('#formNewFile').find('#{{ formfile.nombre.auto_id }}').val("");
+            $('#formNewFile').find('#{{ formfile.is_name_file.auto_id }}').prop('checked', true);
+        })
+    });
+</script>

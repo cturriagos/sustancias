@@ -1,0 +1,127 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block head %}
+    <link href="{% static 'lib/select2-4.0.13/css/select2.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'lib/select2-4.0.13/css/select2-bootstrap4.min.css' %}" rel="stylesheet"/>
+    <script src="{% static 'lib/select2-4.0.13/js/select2.min.js' %}"></script>
+    <script src="{% static 'lib/select2-4.0.13/js/i18n/es.js' %}"></script>
+    {% block head_list %}
+
+    {% endblock %}
+{% endblock %}
+
+{% block content %}
+    <div class="card card-default" style="margin-left: 10%; margin-right: 10%;">
+        <form method="post" action="." enctype="multipart/form-data">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-{{ icontitle }}"></i>
+                    {{ title }}
+                </h3>
+            </div>
+
+            <!-- /.card-header -->
+            <div class="card-body">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="{{ action }}"/>
+                {% block contentform %}
+                    {% for field in form.visible_fields %}
+                        <div class="form-group">
+                            <div style="display: flex">
+                                {% if field.field.required %}
+                                    <div style="font-size: 0.5rem; margin-right: 3px; margin-top: 4px;">
+                                        <i class="fa fa-asterisk fa-xs" aria-hidden="true" style="color: red"></i>
+                                    </div>
+                                {% endif %}
+                                {{ field.label_tag }}
+                            </div>
+                            {{ field }}
+                        </div>
+                    {% endfor %}
+                {% endblock %}
+
+                {% block detallesform %}
+
+                {% endblock %}
+            </div>
+            <div class="card-footer">
+                {% block buntons_list %}
+                    <button rel="save" type="submit" class="btn btn-primary btn-flat">
+                        <i class="fas fa-save"></i>
+                        {% if action == 'add' %}
+                            Guardar registro
+                        {% elif action == 'edit' %}
+                            Actualizar registro
+                        {% endif %}
+                    </button>
+                    <button rel="savenext" type="submit" class="btn btn-secondary btn-flat">
+                        <i class="fas fa-save"></i>
+                        {% if action == 'add' %}
+                            Guardar
+                        {% elif action == 'edit' %}
+                            Actualizar
+                        {% endif %}
+                        y continuar editando
+                    </button>
+                    {% if action == 'add' %}
+                        <button rel="othersave" type="submit" class="btn btn-dark btn-flat">
+                            <i class="fas fa-random"></i>
+                            Guardar y añadir otro
+                        </button>
+                    {% endif %}
+                    <a href="{{ url_list }}" class="btn btn-default float-right btn-flat">
+                        <i class="fas fa-eject"></i>
+                        Cancelar
+                    </a>
+                {% endblock %}
+            </div>
+            <!-- /.card-body -->
+        </form>
+        {% block send_form %}
+            <script>
+                $(function () {
+                    $('form').on('submit', function (event) {
+                        event.preventDefault();
+                        let action_save = $(event.originalEvent.submitter).attr('rel');
+                        const form = this;
+                        const parameters = new FormData(form);
+                        submit_with_ajax(
+                            window.location.pathname, parameters
+                            , 'Confirmación'
+                            , '¿Estas seguro de realizar la siguiente acción?'
+                            , function callback(data) {
+                                if (action_save === 'save') {
+                                    location.href = '{{ url_list }}';
+                                    return false;
+                                } else if (action_save === 'savenext') {
+                                    if (data.url) {
+                                        location.href = data.url;
+                                        return false;
+                                    }
+                                }
+                                location.reload();
+                            }, function cancelOrError() {
+                                $.unblockUI();
+                            }
+                        );
+                    });
+                });
+            </script>
+        {% endblock %}
+        <script>
+            $(function () {
+                {% if form.errors %}
+                    let errors = '';
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            errors += '{{ error }}\n'
+                        {% endfor %}
+                    {% endfor %}
+
+                    message_error(errors)
+
+                {% endif %}
+            });
+        </script>
+    </div>
+{% endblock %}

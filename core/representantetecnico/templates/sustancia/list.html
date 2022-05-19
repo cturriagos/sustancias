@@ -1,0 +1,98 @@
+{% extends 'list.html' %}
+
+{% load static %}
+
+{% block filtrostable %}
+    <li class="nav-item">
+        <a class="nav-link collapsed text-truncate" href="#submenu1" data-toggle="collapse" data-target="#submenu1">
+            <i class="far fa-calendar-alt"></i>
+            <span class="d-none d-sm-inline">Unidad medida</span>
+        </a>
+        <div class="collapse" id="submenu1" aria-expanded="false">
+            <ul class="flex-column pl-2 nav">
+                {% for unidad in unidades %}
+                    <li class="nav-item">
+                        <a rel="search" data-id="{{ unidad.id }}" data-action="searchdata" data-type="un_med"
+                           class="nav-link py-0" data-collapse="submenu1"
+                           style="cursor: pointer">
+                            <i class="far fa-circle nav-icon"></i>
+                            <span>{{ unidad.nombre }}</span>
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </li>
+{% endblock %}
+
+{% block contenttable %}
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Nombre</th>
+        <th scope="col">Cupo autorizado</th>
+        <th scope="col">Unidad de medida</th>
+        <th scope="col">Información adiccional</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+{% endblock %}
+
+{% block buttons_list %}
+    {% if request.session.group.name == "representante" %}
+        <a href="{{ create_url }}" class="btn btn-primary btn-flat">
+            <i class="fas fa-plus"></i>
+            Nuevo registro
+        </a>
+    {% endif %}
+    <button rel="btnSync" type="button" class="btn btn-primary btn-success">
+        <i class="fas fa-sync"></i>
+        Actualizar
+    </button>
+{% endblock %}
+
+{% block script %}
+    <script>
+        $(function () {
+            CSCSF.init({'id': 0, 'action': 'searchdata', 'type': 'todo'});
+            CSCSF.datatable = $('#tblistado').DataTable({
+                'responsive': true,
+                'autoWidth': CSCSF.autoWidthDatatable,
+                'deferRender': true,
+                'processing': true,
+                'ajax': {
+                    'url': window.location.pathname,
+                    'type': 'GET',
+                    'data': function (d) {
+                        d.action = CSCSF.data.action;
+                        d.id = CSCSF.data.id;
+                        d.type = CSCSF.data.type;
+                        d.result = "jsondata";
+                    },
+                    'dataSrc': function (json) {
+                        CSCSF.initial = true;
+                        return json;
+                    }
+                },
+                'columns': [
+                    {'data': 'id'},
+                    {'data': 'nombre'},
+                    {'data': 'cupo_autorizado'},
+                    {'data': 'unidad_medida'},
+                    {'data': 'id'}
+                ],
+                'columnDefs': [
+                    {
+                        'targets': [4],
+                        'render': function (data, type, row) {
+                            return `<a target="_blank" href="/sustancias/view/${data}/" class="nav-link" style="cursor: pointer; text-align: center">Ver</a>`;
+                        }
+                    }
+                ]
+            });
+
+            CSCSF.init_events_datatable();
+        });
+    </script>
+{% endblock %}

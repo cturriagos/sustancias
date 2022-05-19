@@ -1,0 +1,90 @@
+{% extends 'list.html' %}
+
+{% load static %}
+
+{% block contenttable %}
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Nombres</th>
+        <th scope="col">Apellidos</th>
+        <th scope="col">Cedula</th>
+        <th scope="col">Correo electronico</th>
+        {% if request.session.group.name == "representante" %}
+            <th scope="col">Usuarios</th>
+        {% endif %}
+        <th scope="col">Informacion adiccional</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+{% endblock %}
+
+{% block script %}
+    <script>
+        $(function () {
+            CSCSF.init({'id': 0, 'action': 'searchdata', 'type': 'todo'});
+            CSCSF.datatable = $('#tblistado').DataTable({
+                'responsive': true,
+                'autoWidth': CSCSF.autoWidthDatatable,
+                'deferRender': true,
+                'processing': true,
+                "ordering": false,
+                'ajax': {
+                    'url': window.location.pathname,
+                    'type': 'GET',
+                    'data': function (d) {
+                        d.action = CSCSF.data.action;
+                        d.id = CSCSF.data.id;
+                        d.type = CSCSF.data.type;
+                        d.result = "jsondata";
+                    },
+                    'dataSrc': function (json) {
+                        CSCSF.initial = true;
+                        return json;
+                    }
+                },
+                'columns': [
+                    {'data': 'id'},
+                    {'data': 'nombre'},
+                    {'data': 'apellido'},
+                    {'data': 'cedula'},
+                    {'data': 'email'},
+                    {% if request.session.group.name == "representante" %}
+                        {'data': 'rol'},
+                    {% endif %}
+                    {'data': 'id'},
+                ],
+                'columnDefs': [
+                    {% if request.session.group.name == "representante" %}
+                        {
+                            'targets': [5],
+                            'render': function (data, type, row) {
+                                let html = '';
+                                $.each(data, function (key, value) {
+                                    html += '<span class="badge badge-success">' + value.rol + '</span> ';
+                                });
+                                return html;
+                            }
+                        },
+                    {% endif %}
+                    {
+                        'targets': [
+                            {% if request.session.group.name == "representante" %}
+                                6
+                            {% else %}
+                                5
+                            {% endif %}
+                        ],
+                        'render': function (data, type, row) {
+                            return `<a target="_blank" href="/usuarios/view/${data}/" class="nav-link" style="cursor: pointer; text-align: center">Ver</a>`;
+                        }
+                    }
+                ]
+            });
+
+            CSCSF.init_events_datatable();
+        });
+    </script>
+{% endblock %}

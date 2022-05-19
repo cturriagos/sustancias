@@ -1,0 +1,59 @@
+{% extends 'list.html' %}
+
+
+{% block contenttable %}
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Nombre empresa</th>
+        <th scope="col">Ruc</th>
+        <th scope="col">Información adiccional</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+{% endblock %}
+
+{% block script %}
+    <script>
+        $(function () {
+            CSCSF.init({'id': 0, 'action': 'searchdata', 'type': 'todo'});
+            CSCSF.datatable = $('#tblistado').DataTable({
+                'responsive': true,
+                'autoWidth': CSCSF.autoWidthDatatable,
+                'deferRender': true,
+                'processing': true,
+                'ajax': {
+                    'url': window.location.pathname,
+                    'type': 'GET',
+                    'data': function (d) {
+                        d.action = CSCSF.data.action;
+                        d.id = CSCSF.data.id;
+                        d.type = CSCSF.data.type;
+                        d.result = "jsondata";
+                    },
+                    'dataSrc': function (json) {
+                        CSCSF.initial = true;
+                        return json;
+                    }
+                },
+                'columns': [
+                    {'data': 'id'},
+                    {'data': 'nombre'},
+                    {'data': 'ruc'},
+                    {'data': 'id'},
+                ],
+                'columnDefs': [
+                    {
+                        'targets': [3],
+                        'render': function (data, type, row) {
+                            return `<a target="_blank" href="/empresas/view/${data}/" class="nav-link" style="cursor: pointer; text-align: center">Ver</a>`;
+                        }
+                    }
+                ]
+            });
+
+            CSCSF.init_events_datatable();
+        });
+    </script>
+{% endblock %}

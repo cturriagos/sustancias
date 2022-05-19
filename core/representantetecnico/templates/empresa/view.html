@@ -1,0 +1,57 @@
+{% extends 'view.html' %}
+
+{% load custom_filters %}
+
+{% block view_detail %}
+    <div class="row">
+        <div class="col-sm-6">
+            <!-- text input -->
+            <div class="form-group">
+                <label>Nombre:</label>
+                <input type="text" disabled class="form-control"
+                       value="{{ view.object.nombre }}">
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label>Ruc:</label>
+                <input type="text" class="form-control" disabled=""
+                       value="{{ view.object.ruc }}">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <!-- text input -->
+            <div class="form-group">
+                <label>Fecha de registro:</label>
+                <input type="text" disabled class="form-control"
+                       value="{{ view.object.date_creation }}">
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label>Estado:</label>
+                <input type="text" class="form-control" disabled=""
+                       value="{{ view.object|get_bool_prop:'is_active' }}">
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block butons_list %}
+    <a href="{% url 'rp:actualizacionempresa' view.object.id %}" class="btn btn-primary btn-flat">
+        <i class="fas fa-edit"></i>
+        Editar información
+    </a>
+    {% if is_del %}
+        <a href="{% url 'rp:eliminarempresa' view.object.id %}" class="btn btn-danger btn-flat">
+            <i class="fas fa-times"></i>
+            Eliminar
+        </a>
+    {% endif %}
+    <a href="{{ url_list }}" class="btn btn-default float-right btn-flat">
+        <i class="fas fa-eject"></i>
+        Cancelar
+    </a>
+{% endblock %}

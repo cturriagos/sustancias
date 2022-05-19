@@ -1,0 +1,86 @@
+{% extends 'view.html' %}
+
+{% load custom_filters %}
+
+{% block view_detail %}
+    <div class="row">
+        <div class="col-sm-6">
+            <!-- text input -->
+            <div class="form-group">
+                <label>Nombre:</label>
+                <input type="text" disabled class="form-control"
+                       value="{{ view.object.nombre }}">
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label>Dirección:</label>
+                <input type="text" class="form-control" disabled=""
+                       value="{{ view.object|view_prop:"direccion" }}">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <!-- text input -->
+            <div class="form-group">
+                <label>Responsable:</label>
+                <input type="text" disabled class="form-control"
+                       value="{{ view.object|view_prop:"responsable" }}">
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <!-- text input -->
+            <div class="form-group">
+                <label>Fecha de registro:</label>
+                <input type="text" disabled class="form-control"
+                       value="{{ view.object.date_creation }}">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="form-group">
+                <label>Stock en laboratorio:</label>
+                <div class="table-responsive">
+                    <table class="table" style="text-align: center; width: 100%">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            {% for row_name in row_names %}
+                                <th scope="col">{{ row_name.formated }}</th>
+                            {% endfor %}
+                        </thead>
+                        <tbody>
+                        {% for sustancia in estado_sustancias %}
+                            <tr>
+                                <th scope="row"><span>{{ forloop.counter }}</span></th>
+                                {% for key, value in sustancia.items %}
+                                    <td><span>{{ value }}</span></td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block butons_list %}
+    <a href="{% url 'tl:actualizacionlaboratorios' view.object.id %}" class="btn btn-primary btn-flat">
+        <i class="fas fa-edit"></i>
+        Editar información
+    </a>
+    {% if is_del %}
+        <a href="{% url 'tl:eliminarlaboratorio' view.object.id %}" class="btn btn-danger btn-flat">
+            <i class="fas fa-times"></i>
+            Eliminar
+        </a>
+    {% endif %}
+    <a href="{{ url_list }}" class="btn btn-default float-right btn-flat">
+        <i class="fas fa-eject"></i>
+        Cancelar
+    </a>
+{% endblock %}

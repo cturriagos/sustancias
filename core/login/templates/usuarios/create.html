@@ -1,0 +1,25 @@
+{% extends 'create.html' %}
+
+{% load static %}
+
+{% block contentform %}
+    {% for field in form.visible_fields %}
+        {% if field.name != 'groups' or request.session.group.name == "representante" %}
+            <div class="form-group">
+                <div style="display: flex">
+                    {% if field.field.required %}
+                        <div style="font-size: 0.5rem; margin-right: 3px; margin-top: 4px;">
+                            <i class="fa fa-asterisk fa-xs" aria-hidden="true" style="color: red"></i>
+                        </div>
+                    {% endif %}
+                    {{ field.label_tag }}
+                </div>
+                {{ field }}
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'personas/js/create.js' %}"></script>
+{% endblock %}

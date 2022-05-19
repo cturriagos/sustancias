@@ -1,0 +1,94 @@
+{% extends 'layout.html' %}
+
+{% load static %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/css/dataTables.bootstrap4.min.css' %}"/>
+    <link rel="stylesheet"
+          href="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/css/responsive.bootstrap4.min.css' %}"/>
+    <script src="{% static 'lib/datatables-1.10.20/js/jquery.dataTables.js' %}"></script>
+    <script src="{% static 'lib/datatables-1.10.20/js/dataTables.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/responsive.bootstrap4.min.js' %}"></script>
+
+    <script src="{% static 'repositorio/js/fireEventsUrl.js' %}"></script>
+
+    <script src="{% static 'js/cscsf_list.js' %}"></script>
+
+    {% block head_list %}
+
+    {% endblock %}
+{% endblock %}
+
+
+{% block content %}
+    <div class="content">
+        <div class="card card-default">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-{{ icontitle }}"></i>
+                    {{ title }}
+                </h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-10">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table id="tblistado" class="table" style="width: 100%; text-align: center;">
+                                        {% block contenttable %}
+
+                                        {% endblock %}
+                                    </table>
+                                </div>
+
+                            </div>
+                            <div class="card-footer">
+                                {% csrf_token %}
+                                {% block buttons_list %}
+                                    <a href="{{ create_url }}" class="btn btn-primary btn-flat">
+                                        <i class="fas fa-plus"></i>
+                                        Nuevo registro
+                                    </a>
+                                    <button rel="btnSync" type="button" class="btn btn-primary btn-success">
+                                        <i class="fas fa-sync"></i>
+                                        Actualizar
+                                    </button>
+                                {% endblock %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="card">
+                            <div class="card-header">
+                                Filtros
+                            </div>
+                            <div class="card-body mx-0 px-0">
+                                <div class="collapse show d-md-flex">
+                                    <ul rel="lista_filtros"
+                                        class="lista-filtros nav flex-column flex-nowrap overflow-hidden"
+                                        style="width: 100%">
+                                        <li class="nav-item">
+                                            <a rel="search" data-id="0" data-action="searchdata" data-type="todo"
+                                               class="nav-link text-truncate"
+                                               style="cursor: pointer">
+                                                <i class="far fa-list-alt"></i>
+                                                <span>Todo </span>
+                                            </a>
+                                        </li>
+                                        {% block filtrostable %}
+
+                                        {% endblock %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.card-body -->
+        </div>
+    </div>
+{% endblock %}

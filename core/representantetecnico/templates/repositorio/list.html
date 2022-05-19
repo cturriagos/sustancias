@@ -1,0 +1,130 @@
+{% extends 'layout.html' %}
+
+{% load static %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/css/dataTables.bootstrap4.min.css' %}"/>
+    <link rel="stylesheet"
+          href="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/css/responsive.bootstrap4.min.css' %}"/>
+    <script src="{% static 'lib/datatables-1.10.20/js/jquery.dataTables.js' %}"></script>
+    <script src="{% static 'lib/datatables-1.10.20/js/dataTables.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/responsive.bootstrap4.min.js' %}"></script>
+
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'lib/jquery-contextmenu-dist/dist/jquery.contextMenu.min.css' %}">
+    <script src="{% static 'lib/jquery-contextmenu-dist/dist/jquery.contextMenu.min.js' %}"></script>
+    <script src="{% static 'lib/jquery-contextmenu-dist/dist/jquery.ui.position.js' %}"></script>
+
+    <script src="{% static 'js/contextmenu_extend.js' %}"></script>
+
+    <script src="{% static 'repositorio/js/fireEventsUrl.js' %}"></script>
+{% endblock %}
+
+{% block contentwrapper %}
+    <div class="content-wrapper mt-5">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div class="container">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        {% include 'validateheader.html' %}
+                    </div><!-- /.col -->
+                    <div class="col-sm-6">
+                        <ul class="breadcrumb float-sm-right" id="rutasrepositorio">
+                            <li class="breadcrumb-item active">Mi repositorio</li>
+                        </ul>
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- /.content-header -->
+        <div class="card card-default" id="context-menu-file" >
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-10">
+                        <table id="tblistado" class="table table-hover" style="width: 100%">
+                            <thead>
+                            <tr>
+                                <th scope="col" style="width: 5%">T</th>
+                                <th scope="col" style="width: 75%">Nombre</th>
+                                <th scope="col" style="width: 20%">Fecha creación</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                        <input type="file" id="myFile" multiple size="50" style="display: none;"
+                               accept="application/pdf" placeholder="Mis archivos a subir">
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="card">
+                            <div class="card-header">
+                                Ubicaciones
+                            </div>
+                            <div class="card-body mx-0 px-0">
+                                <div class="collapse show d-md-flex">
+                                    <ul rel="lista_filtros"
+                                        class="lista-filtros nav flex-column flex-nowrap overflow-hidden"
+                                        style="width: 100%">
+                                        <li class="nav-item">
+                                            <a data-action="searchcontent" data-type="repository"
+                                               data-url="{% url 'rp:repositorio' %}" data-code="0"
+                                               class="nav-link text-truncate" rel="search"
+                                               style="cursor: pointer">
+                                                <i class="far fa-list-alt"></i>
+                                                <span>Mi repositorio</span>
+                                            </a>
+                                        </li>
+                                        {% if request.session.group.name == "representante" %}
+                                            <li class="nav-item">
+                                                <a data-action="searchcontent" data-type="archgen"
+                                                   data-url="{% url 'rp:repositorio' %}" data-code="0"
+                                                   class="nav-link text-truncate" rel="search"
+                                                   style="cursor: pointer">
+                                                    <i class="fa fa-archive"></i>
+                                                    <span>Archivos generales</span>
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a data-action="searchcontent" data-type="archext"
+                                                   data-url="{% url 'rp:repositorio' %}" data-code="0"
+                                                   class="nav-link text-truncate" rel="search"
+                                                   style="cursor: pointer">
+                                                    <i class="fa fa-file-audio" aria-hidden="true"></i>
+                                                    <span>Archivos externos</span>
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                        <li class="nav-item">
+                                            <a data-action="searchcontent" data-type="recicle"
+                                               data-url="{% url 'rp:repositorio' %}" data-code="0"
+                                               class="nav-link text-truncate" rel="search"
+                                               style="cursor: pointer">
+                                                <i class="far fa-trash-alt"></i>
+                                                <span>Reciclaje</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="toastContainer" class="position-absolute" style="bottom: 0; right: 0">
+
+    </div>
+{% endblock %}
+{% block script %}
+    {% include 'repositorio/modal/createFolder.html' %}
+    {% include 'repositorio/modal/create_file.html' %}
+    {% include 'repositorio/modal/viewFile.html' %}
+    <script src="{% static 'repositorio/js/list.js' %}"></script>
+    <script src="{% static 'repositorio/js/contextmenu.js' %}"></script>
+    <script src="{% static 'repositorio/js/uploadfile.js' %}"></script>
+    <script src="{% static 'repositorio/js/progressbar.js' %}"></script>
+    <script src="{% static 'repositorio/js/viewFile.js' %}"></script>
+{% endblock %}

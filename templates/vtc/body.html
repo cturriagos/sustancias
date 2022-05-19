@@ -1,0 +1,27 @@
+{% extends 'main.html' %}
+{% block body %}
+    <body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+        <!-- Header -->
+        {% include 'vtc/header.html' %}
+        <!-- Sidebar -->
+        {% include 'vtc/sidebar.html' %}
+        <!-- Content -->
+        {% block contentwrapper %}
+            <div class="content-wrapper mt-5">
+                {% include 'content_wrapper.html' %}
+                {% block content %}
+
+                {% endblock %}
+            </div>
+        {% endblock %}
+        <!-- Footer -->
+        {% include 'footer.html' %}
+    </div>
+    <!-- Block javascript -->
+    {% block script %}
+
+    {% endblock %}
+    {% include 'body_scripts.html' %}
+    </body>
+{% endblock %}

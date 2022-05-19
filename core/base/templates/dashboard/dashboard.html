@@ -1,0 +1,177 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/gallery-carousel.css' %}">
+{% endblock %}
+
+{% block content %}
+    <!-- Main content -->
+    <div class="content">
+        <div class="container">
+            <div class="row">
+                <div class="card-deck" style="justify-content: center; align-items: center">
+                    <div class="card border-light mb-3 bg-transparent">
+                        <a href="{% url 'rp:estadomensual' %}" style="text-align: center; color: black;">
+                            <i class="card-img-top fa fa-tasks fa-8x" aria-hidden="true"></i>
+                            <div class="card-body mx-0 px-0 py-0 my-0">
+                                <span class="card-text text-sm text-sm-center">Estado mensual de sustancias</span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="card border-light mb-3 bg-transparent">
+                        <a href="{% url 'rp:movimientoinventario' %}"
+                           style="text-align: center; color: black ;">
+                            <i class="card-img-top fa fa-industry fa-8x" aria-hidden="true"></i>
+                            <div class="card-body mx-0 px-0 py-0 my-0">
+                                <span class="card-text text-sm text-sm-center">Movimiento de Inventario</span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="card border-light mb-3 bg-transparent">
+                        <a href="{% url 'bdg:sustancias' %}"
+                           style="text-align: center; color: black ;">
+                            <i class="card-img-top fa fa-flask fa-8x" aria-hidden="true"></i>
+                            <div class="card-body mx-0 px-0 py-0 my-0">
+                                <span class="card-text text-sm text-sm-center">Stock de sustancias</span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="card border-light mb-3 bg-transparent">
+                        <a href="{% url 'tl:solicitudes' %}"
+                           style="text-align: center; color: black ;">
+                            <i class="card-img-top fas fa-envelope-open-text fa-8x" aria-hidden="true"></i>
+                            <div class="card-body mx-0 px-0 py-0 my-0">
+                                <span class="card-text text-sm text-sm-center">Solicitudes</span>
+                            </div>
+                        </a>
+                    </div>
+                    {% if request.session.group.name == "representante" %}
+                        <div class="card border-light mb-3 bg-transparent">
+                            <a href="{% url 'rp:compras' %}"
+                               style="text-align: center; color: black ;">
+                                <i class="card-img-top fa fa-shopping-cart fa-8x" aria-hidden="true"></i>
+                                <div class="card-body mx-0 px-0 py-0 my-0">
+                                    <span class="card-text text-sm text-sm-center">Compras publicas</span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="card border-light mb-3 bg-transparent">
+                            <a href="{% url 'session:usuarios' %}"
+                               style="text-align: center; color: black ;">
+                                <i class="card-img-top fa fa-users fa-8x" aria-hidden="true"></i>
+                                <div class="card-body mx-0 px-0 py-0 my-0">
+                                    <span class="card-text text-sm text-sm-center">Personas</span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="card border-light mb-3 bg-transparent">
+                            <a href="{% url 'rp:empresas' %}"
+                               style="text-align: center; color: black ;">
+                                <i class="card-img-top fa fa-university fa-8x" aria-hidden="true"></i>
+                                <div class="card-body mx-0 px-0 py-0 my-0">
+                                    <span class="card-text text-sm text-sm-center">Empresas</span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="card border-light mb-3 bg-transparent">
+                            <a href="{% url 'tl:laboratorios' %}"
+                               style="text-align: center; color: black ;">
+                                <i class="card-img-top fa fa-balance-scale fa-8x" aria-hidden="true"></i>
+                                <div class="card-body mx-0 px-0 py-0 my-0">
+                                    <span class="card-text text-sm text-sm-center">Laboratorios</span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="card border-light mb-3 bg-transparent">
+                            <a href="{% url 'bdg:bodegas' %}"
+                               style="text-align: center; color: black ;">
+                                <i class="card-img-top fa fa-database fa-8x" aria-hidden="true"></i>
+                                <div class="card-body mx-0 px-0 py-0 my-0">
+                                    <span class="card-text text-sm text-sm-center">Bodegas</span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="card border-light mb-3 bg-transparent">
+                            <a href="{% url 'tl:proyectos' %}"
+                               style="text-align: center; color: black ;">
+                                <i class="card-img-top fa fa-file-powerpoint fa-8x" aria-hidden="true"></i>
+                                <div class="card-body mx-0 px-0 py-0 my-0">
+                                    <span class="card-text text-sm text-sm-center">Proyectos</span>
+                                </div>
+                            </a>
+                        </div>
+                    {% elif request.session.group.name == "bodega" %}
+                        <div class="card border-light mb-3 bg-transparent">
+                            <a href="{% url 'rp:compras' %}"
+                               style="text-align: center; color: black ;">
+                                <i class="card-img-top fa fa-shopping-cart fa-8x" aria-hidden="true"></i>
+                                <div class="card-body mx-0 px-0 py-0 my-0">
+                                    <span class="card-text text-sm text-sm-center">Compras publicas</span>
+                                </div>
+                            </a>
+                        </div>
+                    {% elif request.session.group.name == "laboratorio" %}
+                        <div class="card border-light mb-3 bg-transparent">
+                            <a href="{% url 'tl:informesmensuales' %}"
+                               style="text-align: center; color: black ;">
+                                <i class="card-img-top fa fa-address-card fa-8x" aria-hidden="true"></i>
+                                <div class="card-body mx-0 px-0 py-0 my-0">
+                                    <span class="card-text text-sm text-sm-center">Informes mensuales</span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="card border-light mb-3 bg-transparent">
+                            <a href="{% url 'session:usuarios' %}"
+                               style="text-align: center; color: black ;">
+                                <i class="card-img-top fa fa-users fa-8x" aria-hidden="true"></i>
+                                <div class="card-body mx-0 px-0 py-0 my-0">
+                                    <span class="card-text text-sm text-sm-center">Personas</span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="card border-light mb-3 bg-transparent">
+                            <a href="{% url 'tl:proyectos' %}"
+                               style="text-align: center; color: black ;">
+                                <i class="card-img-top fa fa-file-powerpoint fa-8x" aria-hidden="true"></i>
+                                <div class="card-body mx-0 px-0 py-0 my-0">
+                                    <span class="card-text text-sm text-sm-center">Proyectos</span>
+                                </div>
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <!-- /.row -->
+            {% if carousel.count > 0 %}
+                <div class="row">
+                    <span>Documentos generales</span>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-lg-12">
+                        {% include 'gallery_docs_dashboard.html' %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        <!-- /.container-fluid -->
+    </div>
+    <!-- /.content -->
+
+    {% if not request.user.is_pass_update %}
+        <script>
+            location.href = '{% url 'session:cambiar_clave' %}'
+        </script>
+    {% endif %}
+
+    {% if not request.user.is_info_update %}
+        <script>
+            location.href = '{% url 'session:perfilusuario' %}'
+        </script>
+    {% endif %}
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'js/carousel.js' %}"></script>
+{% endblock %}

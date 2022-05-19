@@ -1,0 +1,68 @@
+<div id="modalNewFolder" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <form id="formNewFolder" method="post" action="">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="newfolder"/>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nueva carpeta</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        {% if formfolder.nombre.field.required %}
+                            <div style="font-size: 0.5rem; margin-right: 3px; margin-top: 4px;">
+                                <i class="fa fa-asterisk fa-xs" aria-hidden="true"
+                                   style="color: red"></i>
+                            </div>
+                        {% endif %}
+                        <label for="{{ formfolder.nombre.auto_id }}">Nombre de carpeta:</label>
+                        {{ formfolder.nombre }}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('#formNewFolder').on('submit', function (event) {
+            event.preventDefault();
+            const form = this;
+            const parameters = new FormData(form);
+            $.blockUI();
+            $.ajax({
+                'url': window.location.pathname,
+                'type': 'POST',
+                'data': parameters,
+                'dataType': 'json',
+                'processData': false,
+                'contentType': false
+            }).done(function (data) {
+                if (!data.hasOwnProperty('error')) {
+                    repositorio.datatable.ajax.reload();
+                    $('#modalNewFolder').modal('hide');
+                } else {
+                    message_error(data.error);
+                }
+                $.unblockUI();
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                message_error(errorThrown);
+                $.unblockUI();
+            }).always(function (data) {
+                $.unblockUI();
+            });
+        });
+
+        $('#modalNewFolder').on('hidden.bs.modal', function (e) {
+            $('#formNewFolder').find('#{{ formfolder.nombre.auto_id }}').val("")
+        })
+    });
+</script>

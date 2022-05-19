@@ -1,0 +1,56 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <div class="card card-default" style="margin-left: 10%; margin-right: 10%;">
+        <form method="post" action=".">
+            {% csrf_token %}
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-{{ icontitle }}"></i>
+                    {{ title }}
+                </h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                {% csrf_token %}
+                <div class="alert alert-danger alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <h5><i class="icon fas fa-ban"></i> Alerta!</h5>
+                    Estas seguro de eliminar el registro Nro. {{ object.id }}
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary btn-flat">
+                    <i class="fas fa-save"></i>
+                    Si, aceptar
+                </button>
+                <a href="{{ url_list }}" class="btn btn-info btn-flat">
+                    <i class="fas fa-times"></i>
+                    Cancelar
+                </a>
+            </div>
+            <!-- /.card-body -->
+        </form>
+        <script>
+            $('form').on('submit', function (event) {
+                event.preventDefault();
+                var form = this;
+                var parameters = new FormData(form);
+                submit_with_ajax(
+                    window.location.pathname
+                    , parameters
+                    , "Notificación"
+                    , "¿Estas seguro de eliminar el siguiente registro?"
+                    , function (data) {
+                        message_info("Registro eliminado correctamente", function () {
+                            location.href = '{{ url_list }}';
+                        });
+                    },
+                    function (error) {
+                        $.unblockUI();
+                    }
+                );
+            });
+        </script>
+    </div>
+{% endblock %}

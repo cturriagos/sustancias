@@ -1,0 +1,28 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <div class="card card-default" style="margin-left: 5%; margin-right: 5%;">
+        <form method="post" action="." enctype="multipart/form-data">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-{{ icontitle }}"></i>
+                    {{ title }}
+                </h3>
+            </div>
+
+            <!-- /.card-header -->
+            <div class="card-body">
+                {% block view_detail %}
+
+                {% endblock %}
+            </div>
+            <div class="card-footer">
+                {% block butons_list %}
+
+                {% endblock %}
+            </div>
+            <!-- /.card-body -->
+        </form>
+
+    </div>
+{% endblock %}

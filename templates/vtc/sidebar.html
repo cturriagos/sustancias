@@ -1,0 +1,113 @@
+{% load static %}
+{% load custom_filters %}
+<aside class="main-sidebar sidebar-light-primary elevation-4">
+    <a href="{% url 'dashboard' %}" class="brand-link">
+        <img loading="lazy" src="{% static 'img/uteq/logoUTEQoriginal1.png' %}" alt="UTEQ Logo sidebar"
+             class="brand-image img-rounded elevation-3" style="opacity: .8">
+        <span class="brand-text font-weight-light">CSCSF</span>
+    </a>
+    <div class="sidebar">
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+            <div class="image">
+                <img loading="lazy" class="brand-image img-rounded elevation-3" src="{{ request.user|get_url_image:"imagen" }}"
+                     alt="User image sidebar"/>
+            </div>
+            <div class="info">
+                <a href="#" class="d-block">{{ request.user.controller.get_user_info }}</a>
+            </div>
+        </div>
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                <li class="nav-header">Modulos</li>
+                <li class="nav-item">
+                    <a href="{% url 'rp:estadomensual' %}" class="nav-link text-truncate">
+                        <i class="fa fa-tasks" aria-hidden="true"></i>
+                        <span>Estado mensual de sustancias</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'rp:movimientoinventario' %}" class="nav-link text-truncate">
+                        <i class="fa fa-industry" aria-hidden="true"></i>
+                        <span>Movimientos de inventario</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'bdg:sustancias' %}" class="nav-link text-truncate">
+                        <i class="fa fa-flask" aria-hidden="true"></i>
+                        <span>Stock de sustancias</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'tl:solicitudes' %}" class="nav-link text-truncate">
+                        <i class="fas fa-envelope-open-text" aria-hidden="true"></i>
+                        <span>Solicitudes</span>
+                    </a>
+                </li>
+                {% if request.session.group.name == "representante" %}
+                    <li class="nav-item">
+                        <a href="{% url 'rp:compras' %}" class="nav-link text-truncate">
+                            <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+                            <span>Compras publicas</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'session:usuarios' %}" class="nav-link text-truncate">
+                            <i class="fa fa-users" aria-hidden="true"></i>
+                            <span>Personas</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'rp:empresas' %}" class="nav-link text-truncate">
+                            <i class="fa fa-university" aria-hidden="true"></i>
+                            <span>Proveedores</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'tl:laboratorios' %}" class="nav-link text-truncate">
+                            <i class="fa fa-balance-scale" aria-hidden="true"></i>
+                            <span>Laboratorios</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'bdg:bodegas' %}" class="nav-link text-truncate">
+                            <i class="fa fa-database" aria-hidden="true"></i>
+                            <span>Bodegas</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'tl:proyectos' %}" class="nav-link text-truncate">
+                            <i class="fa fa-file-powerpoint" aria-hidden="true"></i>
+                            <span>Proyectos</span>
+                        </a>
+                    </li>
+                {% elif request.session.group.name == "bodega" %}
+                    <li class="nav-item">
+                        <a href="{% url 'rp:compras' %}" class="nav-link text-truncate">
+                            <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+                            <span>Compras publicas</span>
+                        </a>
+                    </li>
+                {% elif request.session.group.name == "laboratorio" %}
+                    <li class="nav-item">
+                        <a href="{% url 'tl:informesmensuales' %}" class="nav-link text-truncate">
+                            <i class="fa fa-address-card" aria-hidden="true"></i>
+                            <span>Informes mensuales</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'session:usuarios' %}" class="nav-link text-truncate">
+                            <i class="fa fa-users" aria-hidden="true"></i>
+                            <span>Personas</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'tl:proyectos' %}" class="nav-link text-truncate">
+                            <i class="fa fa-file-powerpoint" aria-hidden="true"></i>
+                            <span>Proyectos</span>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</aside>

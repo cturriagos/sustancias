@@ -1,0 +1,86 @@
+{% extends 'view.html' %}
+{% load custom_filters %}
+
+{% block view_detail %}
+    <div class="row">
+        <div class="col-sm-6">
+            <!-- text input -->
+            <div class="form-group">
+                <label>Nombre:</label>
+                <input type="text" disabled class="form-control" readonly
+                       value="{{ view.object.nombre }}">
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label>Fecha de registro:</label>
+                <input type="text" class="form-control" disabled="" readonly
+                       value="{{ view.object.date_creation }}">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="form-group">
+                <label>Descripción:</label>
+                <textarea name="observacionrp" class="form-control" rows="4"
+                          disabled>{{ view.object|view_prop:"descripcion" }}</textarea>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <!-- text input -->
+            <div class="form-group">
+                <label>Fecha de inicio:</label>
+                <input type="text" disabled class="form-control" readonly
+                       value="{{ view.object.fecha_inicio|date:"" }}">
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label>Fecha de fin:</label>
+                <input type="text" class="form-control" disabled="" readonly
+                       value="{{ view.object.fecha_fin|date:"" }}">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <!-- text input -->
+            <div class="form-group">
+                <label>Laboratorio:</label>
+                <input type="text" disabled class="form-control" readonly
+                       value="{{ view.object.laboratorio.nombre }}">
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label>Responsable:</label>
+                <input type="text" class="form-control" disabled="" readonly
+                       value="{{ view.object.responsable }}">
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block butons_list %}
+    <a href="{% url 'tl:actualizacionproyecto' view.object.id %}"
+       class="btn btn-primary btn-flat">
+        <i class="fas fa-edit"></i>
+        Editar
+    </a>
+    <a href="{% url 'tl:eliminarproyecto' view.object.id %}"
+       class="btn btn-danger btn-flat">
+        <i class="fas fa-times"></i>
+        Eliminar
+    </a>
+    <a href="{{ url_list }}" class="btn btn-default float-right btn-flat">
+        <i class="fas fa-eject"></i>
+        Cancelar
+    </a>
+{% endblock %}
+
+{% block script %}
+
+{% endblock %}

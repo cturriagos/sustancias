@@ -1,0 +1,30 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% block body %}
+    <body class="hold-transition layout-top-nav">
+    <!-- data-panel-auto-height="false" -->
+    <div class="main-container-load">
+        <div class="wrapper">
+            <!-- Header -->
+            {% include 'hzt/header.html' %}
+            {% block contentwrapper %}
+                <div class="content-wrapper mt-5">
+                    {% include 'content_wrapper.html' %}
+                    {% block content %}
+
+                    {% endblock %}
+                </div>
+            {% endblock %}
+            <!-- Footer -->
+            {% include 'footer.html' %}
+        </div>
+        <!-- Block javascript -->
+        {% block script %}
+
+        {% endblock %}
+        {% include 'body_scripts.html' %}
+    </div>
+    </body>
+{% endblock %}

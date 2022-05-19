@@ -1,0 +1,24 @@
+{
+  "name": "cssf-proyect",
+  "version": "1.0.0",
+  "description": "Control de inventarios de sustancias catalogadas",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/josegerar/cscsf.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/josegerar/cscsf/issues"
+  },
+  "homepage": "https://github.com/josegerar/cscsf#readme",
+  "dependencies": {
+    "bootstrap": "^4.6.0",
+    "esequal": "^0.1.15",
+    "jquery": "^3.6.0",
+    "popper.js": "^1.16.1"
+  }
+}

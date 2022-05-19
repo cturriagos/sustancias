@@ -1,0 +1,59 @@
+<div id="modalDetalleConsumoSustanciaInforme" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <form id="frmDetalleConsumoSustanciaInforme" method="post" action=".">
+            {% csrf_token %}
+            <input type="hidden" name="id_detalle" value=""/>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Desglose</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="id_cantidad_consumida_registrada">Cantidad consumida en el mes:</label>
+                                <input type="text" name="cantidad_consumida_registrada" class="form-control"
+                                       placeholder="Cantidad consumida en el mes" readonly disabled
+                                       required="" id="id_cantidad_consumida_registrada">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="id_cantidad_desglose_total">Cantidad desglose:</label>
+                                <input type="text" name="cantidad_desglose_total" class="form-control"
+                                       placeholder="Cantidad desglose" readonly disabled
+                                       required="" id="id_cantidad_desglose_total" value="0">
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <button rel="add_consumo" type="button" class="btn btn-secondary btn-flat btn-block">
+                        <i class="fas fa-plus"></i>
+                        Agregar consumo
+                    </button>
+                    <br>
+                    <table id="tbdesglosesustanciainforme" class="table" style="width: 100%">
+                        <thead>
+                        <tr>
+                            <th scope="col"><label>Proyecto: </label></th>
+                            <th scope="col"><label>Cantidad consumida: </label></th>
+                            <th scope="col"><label>Documento: </label></th>
+                            <th scope="col"><label>Acciones: </label></th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button rel="btnSyncDesgl" type="button" class="btn btn-primary btn-success">
+                        <i class="fas fa-sync"></i>
+                        Actualizar
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

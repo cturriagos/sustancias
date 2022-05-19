@@ -1,0 +1,48 @@
+{% extends 'header.html' %}
+
+{% block nav_user %}
+    <li class="nav-item dropdown">
+        <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true"
+           aria-expanded="false" class="nav-link dropdown-toggle">Modulos</a>
+        <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+            <li class="dropdown-submenu dropdown-hover">
+                <a id="dropdownSubMenu2" href="#" role="button" data-toggle="dropdown"
+                   aria-haspopup="true"
+                   aria-expanded="false" class="dropdown-item dropdown-toggle">Inventario</a>
+                <ul aria-labelledby="dropdownSubMenu2" class="dropdown-menu border-0 shadow">
+                    <li><a href="{% url 'rp:estadomensual' %}" class="dropdown-item">Estado mensual de
+                        sustancias</a></li>
+                    <li><a href="{% url 'rp:movimientoinventario' %}" class="dropdown-item">Movimientos
+                        de inventario </a></li>
+                </ul>
+            </li>
+            <li class="dropdown-divider"></li>
+            <li><a href="{% url 'bdg:sustancias' %}" class="dropdown-item">Stock de sustancias</a></li>
+            <li><a href="{% url 'tl:solicitudes' %}" class="dropdown-item">Solicitudes</a></li>
+            {% if request.session.group.name == "representante" %}
+                <li><a href="{% url 'rp:compras' %}" class="dropdown-item">Compras publicas</a></li>
+                <li class="dropdown-divider"></li>
+
+                <li><a href="{% url 'session:usuarios' %}" class="dropdown-item">Personas</a></li>
+                <li><a href="{% url 'rp:empresas' %}" class="dropdown-item">Proveedores</a></li>
+
+                <li class="dropdown-divider"></li>
+                <li><a href="{% url 'tl:laboratorios' %}" class="dropdown-item">Laboratorios</a></li>
+                <li><a href="{% url 'bdg:bodegas' %}" class="dropdown-item">Bodegas</a></li>
+                <li><a href="{% url 'tl:proyectos' %}" class="dropdown-item">Proyectos</a></li>
+
+            {% elif request.session.group.name == "bodega" %}
+                <li><a href="{% url 'rp:compras' %}" class="dropdown-item">Compras publicas</a></li>
+            {% elif request.session.group.name == "laboratorio" %}
+                <li><a href="{% url 'tl:informesmensuales' %}" class="dropdown-item">Informes mensuales</a>
+                </li>
+
+                <li class="dropdown-divider"></li>
+                <li><a href="{% url 'session:usuarios' %}" class="dropdown-item">Personas</a></li>
+
+                <li class="dropdown-divider"></li>
+                <li><a href="{% url 'tl:proyectos' %}" class="dropdown-item">Proyectos</a></li>
+            {% endif %}
+        </ul>
+    </li>
+{% endblock %}
